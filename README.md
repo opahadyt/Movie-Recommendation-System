@@ -127,7 +127,5 @@ Implement collaborative filtering
 Deploy as a web application
 
 Conclusion
-This project demonstrates how machine learning techniques can be used to build a real-world recommendation system using efficient algorithms and a simple GUI.
 
-Resume Description
-Developed a Movie Recommendation System using content-based filtering with TF-IDF and cosine similarity. Built an interactive GUI using Tkinter for real-time movie recommendations.
+This project demonstrates how machine learning techniques can be used to build a real-world recommendation system using efficient algorithms and a simple GUI.
