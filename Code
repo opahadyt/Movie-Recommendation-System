@@ -1,0 +1,168 @@
+import pandas as pd
+import tkinter as tk
+from tkinter import ttk, messagebox
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+CSV_FILE = "movie_dataset_1200.csv"
+
+
+def load_data(csv_file):
+    df = pd.read_csv(csv_file)
+    required_cols = ["movie_name", "year", "imdb_rating", "genres", "director", "cast"]
+
+    for col in required_cols:
+        if col not in df.columns:
+            raise ValueError(f"Missing required column: {col}")
+
+    df = df.dropna(subset=["movie_name"]).copy()
+
+    for col in ["genres", "director", "cast"]:
+        df[col] = df[col].fillna("").astype(str)
+
+    df["combined_features"] = (
+        df["genres"] + " " +
+        df["director"] + " " +
+        df["cast"]
+    )
+
+    vectorizer = TfidfVectorizer(stop_words="english")
+    feature_matrix = vectorizer.fit_transform(df["combined_features"])
+    similarity_matrix = cosine_similarity(feature_matrix)
+
+    return df, similarity_matrix
+
+
+def recommend_movies(movie_name, df, similarity_matrix, top_n=5):
+    movie_name = movie_name.strip().lower()
+
+    exact_match = df[df["movie_name"].str.lower() == movie_name]
+
+    if not exact_match.empty:
+        idx = exact_match.index[0]
+    else:
+        partial_match = df[df["movie_name"].str.lower().str.contains(movie_name, na=False)]
+        if partial_match.empty:
+            return None, []
+        idx = partial_match.index[0]
+
+    similarity_scores = list(enumerate(similarity_matrix[idx]))
+    similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
+
+    recommendations = []
+    for i, score in similarity_scores[1:]:
+        row = df.iloc[i]
+        recommendations.append({
+            "movie_name": row["movie_name"],
+            "year": row["year"],
+            "imdb_rating": row["imdb_rating"],
+            "genres": row["genres"],
+            "director": row["director"],
+            "cast": row["cast"],
+            "score": round(float(score), 3)
+        })
+
+        if len(recommendations) >= top_n:
+            break
+
+    return df.iloc[idx]["movie_name"], recommendations
+
+
+def on_recommend():
+    movie_name = movie_entry.get().strip()
+
+    if not movie_name:
+        messagebox.showwarning("Input Required", "Please enter a movie name.")
+        return
+
+    selected_title, recommendations = recommend_movies(movie_name, df, similarity_matrix, top_n=5)
+
+    result_box.delete("1.0", tk.END)
+
+    if selected_title is None:
+        result_box.insert(tk.END, "Movie not found.\n\nTry one of these sample titles:\n")
+        for title in df["movie_name"].head(10):
+            result_box.insert(tk.END, f"- {title}\n")
+        return
+
+    result_box.insert(tk.END, f"Selected Movie: {selected_title}\n")
+    result_box.insert(tk.END, "=" * 90 + "\n\n")
+
+    for idx, movie in enumerate(recommendations, start=1):
+        result_box.insert(tk.END, f"{idx}. {movie['movie_name']} ({movie['year']})\n")
+        result_box.insert(tk.END, f"   IMDb Rating : {movie['imdb_rating']}\n")
+        result_box.insert(tk.END, f"   Genres      : {movie['genres']}\n")
+        result_box.insert(tk.END, f"   Director    : {movie['director']}\n")
+        result_box.insert(tk.END, f"   Cast        : {movie['cast']}\n")
+        result_box.insert(tk.END, f"   Similarity  : {movie['score']}\n\n")
+
+
+def fill_selected_title(event=None):
+    selected = title_combo.get()
+    movie_entry.delete(0, tk.END)
+    movie_entry.insert(0, selected)
+
+
+df, similarity_matrix = load_data(CSV_FILE)
+
+root = tk.Tk()
+root.title("Movie Recommendation System")
+root.geometry("950x650")
+root.configure(bg="#141414")
+
+heading = tk.Label(
+    root,
+    text="Movie Recommendation System",
+    font=("Arial", 22, "bold"),
+    bg="#141414",
+    fg="white"
+)
+heading.pack(pady=15)
+
+subheading = tk.Label(
+    root,
+    text="Enter a movie name or pick one from the dropdown",
+    font=("Arial", 11),
+    bg="#141414",
+    fg="#d0d0d0"
+)
+subheading.pack(pady=5)
+
+input_frame = tk.Frame(root, bg="#141414")
+input_frame.pack(pady=10)
+
+movie_entry = tk.Entry(input_frame, width=42, font=("Arial", 13))
+movie_entry.grid(row=0, column=0, padx=8)
+
+recommend_button = tk.Button(
+    input_frame,
+    text="Recommend",
+    command=on_recommend,
+    font=("Arial", 12, "bold"),
+    bg="#1db954",
+    fg="white",
+    padx=12,
+    pady=4
+)
+recommend_button.grid(row=0, column=1, padx=8)
+
+title_combo = ttk.Combobox(
+    root,
+    values=sorted(df["movie_name"].unique().tolist()),
+    width=55,
+    font=("Arial", 11)
+)
+title_combo.pack(pady=10)
+title_combo.set("Select a movie title")
+title_combo.bind("<<ComboboxSelected>>", fill_selected_title)
+
+result_box = tk.Text(
+    root,
+    wrap="word",
+    font=("Courier New", 11),
+    bg="#f8f8f8",
+    fg="black"
+)
+result_box.pack(padx=20, pady=20, fill="both", expand=True)
+
+root.mainloop()
