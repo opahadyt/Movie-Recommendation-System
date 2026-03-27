@@ -51,9 +51,13 @@ Keep these files together in one folder:
 Suggested folder structure:
 
 Movie_recommendor_system/
+
 │
+
 ├── movie_recommender_single_file.py
+
 ├── movie_dataset_1200.csv
+
 └── README.txt
 
 Requirements
