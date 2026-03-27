@@ -1,131 +1,170 @@
-Movie Recommendation System:
+Movie Recommendation System
+GUI-Based Content Recommender using Python, Tkinter, TF-IDF, and Cosine Similarity
 
-Project Overview
-This project implements a Movie Recommendation System using content-based filtering. It recommends movies based on similarity in features such as genre, overview, keywords, director, and cast. A graphical user interface built using Tkinter allows users to enter a movie name and receive recommendations instantly.
+Project Description
+This project is a GUI-based Movie Recommendation System developed in Python using content-based filtering. The program recommends movies similar to a selected movie by analyzing metadata features such as genres, director, and cast. A simple graphical user interface built with Tkinter allows the user to enter a movie title or select one from a dropdown list and instantly receive the top 5 similar movie recommendations.
 
-Methodology
-Content-Based Filtering
-The system recommends movies by computing similarity between movie features.
+The recommendation engine uses TF-IDF (Term Frequency-Inverse Document Frequency) to convert combined movie metadata into numerical feature vectors. Cosine similarity is then used to measure how closely related one movie is to other movies in the dataset. Based on the similarity scores, the system ranks and displays the most relevant movie suggestions.
 
-Steps Involved
-Data preprocessing
+This project is suitable for academic demonstration, beginner machine learning implementation, and offline desktop execution.
 
-Feature combination
+Technical Overview
+Recommendation Technique:
+- Content-Based Filtering
 
-Text vectorization
+Core Features Used for Similarity:
+- Genres
+- Director
+- Cast
 
-Similarity computation
+Machine Learning Concepts Used:
+- Text feature combination
+- TF-IDF vectorization
+- Cosine similarity
 
-Recommendation generation
+Interface:
+- Tkinter GUI
+- Text input for movie title
+- Dropdown selection for movie names
+- Recommendation display area
 
-Technologies Used
-Programming Language
-Python 3.x
+Dataset Information
+The project uses a CSV dataset containing 1200 movie records.
 
-Libraries Used
-Pandas - Data handling
+Dataset columns:
+- movie_name
+- year
+- imdb_rating
+- genres
+- director
+- cast
 
-Scikit-learn - Machine learning algorithms
+Important:
+The CSV file must remain in the same folder as the Python file, because the program loads the dataset directly using its filename.
 
-Tkinter - GUI development
+Project Files
+Keep these files together in one folder:
 
-Joblib - Model saving and loading
+- movie_recommender_single_file.py
+- movie_dataset_1200.csv
 
-Project Structure
-movie-recommender/
-movies.csv - Dataset
-train_recommender.py - Model training script
-app.py - GUI application
-movie_model.pkl - Saved model generated after training
+Suggested folder structure:
 
-Dataset Description
-The dataset contains the following columns:
+Movie_recommendor_system/
+│
+├── movie_recommender_single_file.py
+├── movie_dataset_1200.csv
+└── README.txt
 
-title - Movie name
+Requirements
+Software required:
+- Python 3.x
 
-genre - Movie category
+Python libraries required:
+- pandas
+- scikit-learn
 
-overview - Short description
+Tkinter note:
+Tkinter is generally included with standard Python installations on Windows. In most cases, no separate installation is required.
 
-director - Director name
+Installation Steps
+1. Install Python on your system.
+2. Open Command Prompt.
+3. Install the required dependencies using:
 
-cast - Main actors
+   py -m pip install pandas scikit-learn
 
-keywords - Important tags
+4. Wait until installation completes successfully.
 
-rating - Movie rating
+How to Store the Files
+1. Create a folder on your computer, for example:
 
-Installation and Setup
-Step 1: Install Python
-Download and install Python from the official website.
+   C:\Users\YourName\Movie_recommendor_system
 
-Step 2: Install Required Libraries
-Run the following command in terminal or command prompt:
+2. Save the Python file `movie_recommender_single_file.py` inside that folder.
+3. Save the dataset file `movie_dataset_1200.csv` inside the same folder.
+4. Make sure both files are in the same directory before running the program.
 
-pip install pandas scikit-learn joblib
+How to Run the Program
+1. Open Command Prompt.
+2. Move into the project folder using the `cd` command.
 
-How to Run the Project
-Step 1: Prepare Dataset
-Place the movies.csv file in the project folder and ensure that the column names are correct.
+   Example:
+   cd C:\Users\YourName\Movie_recommendor_system
 
-Step 2: Train the Model
-Run the following command:
+3. Run the program using:
 
-python train_recommender.py
+   py movie_recommender_single_file.py
 
-This will process the dataset, create the similarity matrix, and save the model as movie_model.pkl.
+4. If everything is set up correctly, the GUI window will open.
 
-Step 3: Run GUI Application
-Run the following command:
+How to Use the Program
+1. Launch the program.
+2. Enter a movie name in the input field, or select a title from the dropdown list.
+3. Click the "Recommend" button.
+4. The system will display the top 5 similar movies.
+5. Each recommendation includes:
+   - Movie name
+   - Year
+   - IMDb rating
+   - Genres
+   - Director
+   - Cast
+   - Similarity score
 
-python app.py
+If the entered movie is not found, the program displays sample movie titles so the user can try again.
 
-A window will open where the user can:
+How the Program Works
+1. The dataset is loaded from the CSV file using Pandas.
+2. Required columns are validated.
+3. Missing values in text fields are handled.
+4. The `genres`, `director`, and `cast` fields are combined into one text feature.
+5. TF-IDF vectorization converts the combined text into a numerical matrix.
+6. Cosine similarity is computed between all movie entries.
+7. When the user selects a movie, the program finds the most similar movies based on similarity scores.
+8. The top 5 recommendations are shown in the Tkinter GUI.
 
-Enter a movie name
+Program Highlights
+- Simple and user-friendly GUI
+- Works offline after setup
+- Fast recommendation generation
+- Uses real machine learning concepts
+- Easy to understand for mini project or academic submission
+- Single-file implementation for portability and simplicity
 
-Click "Recommend"
-
-View the top 5 similar movies
-
-How It Works (Technical)
-Feature Combination
-The system combines multiple text fields into one combined column.
-
-Example:
-df["combined"] = df["genre"] + " " + df["overview"] + " " + df["keywords"]
-
-Text Vectorization
-TF-IDF is used to convert text data into numerical vectors.
-
-Similarity Calculation
-Cosine similarity is used to measure similarity between movies. Higher similarity means more relevant recommendations.
-
-Features
-Simple and user-friendly GUI
-
-Fast recommendations
-
-Works offline
-
-Scalable with larger datasets
+Advantages
+- Easy to install and run
+- Good for learning recommendation system basics
+- Does not require internet connection after setup
+- Suitable for demonstration and viva presentation
+- Can be extended with additional features
 
 Limitations
-Requires exact movie name input
+- Recommendations are based only on metadata
+- No personalized user preference learning
+- Dataset is synthetic
+- Requires Python and dependencies on the user system
+- CSV file and Python file must remain together
 
-No personalized recommendations
+Future Improvements
+- Use real movie metadata from trusted public datasets
+- Add poster images and descriptions
+- Add spelling correction for search
+- Add autocomplete suggestions
+- Convert the program into a standalone executable (.exe)
+- Build a web-based version using Flask or Django
+- Add collaborative filtering or hybrid recommendation methods
 
-Dataset may be synthetic
+Example Command Summary
+Install dependencies:
+py -m pip install pandas scikit-learn
 
-Future Enhancements
-Add dropdown suggestions for movie names
-
-Integrate movie posters using APIs
-
-Implement collaborative filtering
-
-Deploy as a web application
+Run the project:
+py movie_recommender_single_file.py
 
 Conclusion
+This Movie Recommendation System demonstrates how machine learning techniques such as TF-IDF and cosine similarity can be applied in a practical desktop application. By combining movie metadata and presenting results through a Tkinter GUI, the project provides an effective and beginner-friendly implementation of a content-based recommender system.
 
-This project demonstrates how machine learning techniques can be used to build a real-world recommendation system using efficient algorithms and a simple GUI.
+Author
+Mohammed Ahad Khan
+Registration Number: 25BAS10021
