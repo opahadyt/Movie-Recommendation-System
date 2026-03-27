@@ -169,6 +169,4 @@ py movie_recommender_single_file.py
 Conclusion
 This Movie Recommendation System demonstrates how machine learning techniques such as TF-IDF and cosine similarity can be applied in a practical desktop application. By combining movie metadata and presenting results through a Tkinter GUI, the project provides an effective and beginner-friendly implementation of a content-based recommender system.
 
-Author
-Mohammed Ahad Khan
-Registration Number: 25BAS10021
+
